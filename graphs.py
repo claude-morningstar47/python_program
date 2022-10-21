@@ -9,6 +9,7 @@ x = np.linspace(-6, 6, 30)
 y = np.linspace(-6, 6, 30)
 
 x, y = np.meshgrid(x, y)
+
 z = f(x, y)
 
 fig = plt.figure()
