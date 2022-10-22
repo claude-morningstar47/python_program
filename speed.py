@@ -9,3 +9,5 @@ def bytes_to_md(bytes):
 
 download_speed = bytes_to_md(speed_test.download())
 print("Your Download speed is", download_speed, "MB")
+
+## il faut importer speedtestå
