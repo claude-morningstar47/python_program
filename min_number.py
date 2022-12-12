@@ -21,5 +21,5 @@ def count_all_stars(galaxies):
         total_stars += stars  # fix me!
     return total_stars
 
-list_galaxies = [343, 433, 43, 44, 565]
+list_galaxies = [1,2,3, 4]
 print(count_all_stars(list_galaxies))
