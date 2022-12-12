@@ -12,3 +12,14 @@ for num in numbers:
 
 # print the minimum number
 print(min_num)
+
+
+
+def count_all_stars(galaxies):
+    total_stars = 0
+    for stars in galaxies:
+        total_stars += stars  # fix me!
+    return total_stars
+
+list_galaxies = [343, 433, 43, 44, 565]
+print(count_all_stars(list_galaxies))
