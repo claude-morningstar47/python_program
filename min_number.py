@@ -1,5 +1,5 @@
 # define a list of numbers
-numbers = [10, 20, 30, 40, 50]
+numbers = [11, 920, 830, 540, 50]
 
 # initialize the minimum number to the first number in the list
 min_num = numbers[0]
