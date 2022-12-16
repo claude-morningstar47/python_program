@@ -12,4 +12,4 @@ for i in range(23):
     a = random.choice(animal)
     pg.write("you are a" + a)
     pg.press('enter')
-    
+    pg.click('mop')
