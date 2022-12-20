@@ -13,3 +13,4 @@ for i in range(23):
     pg.write("you are a" + a)
     pg.press('enter')
     pg.click('mop')
+    pg.countdown(3)
