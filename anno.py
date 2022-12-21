@@ -12,5 +12,14 @@ for i in range(23):
     a = random.choice(animal)
     pg.write("you are a" + a)
     pg.press('enter')
-    pg.click('mop')
-    pg.countdown(3)
+    
+
+#! Single number
+def single_number():
+    count = 0
+    for i in nums:
+        count = count * i
+        return count
+
+nums = [4,5,3,1,2]
+print(single_number())
