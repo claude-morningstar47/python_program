@@ -18,8 +18,8 @@
 def single_number():
     count = 0
     for i in nums:
-        count = count =+i
+        count = count ^ i
         return count
 
-nums = [4,3,5,1,2]
+nums = [4,3,1,2]
 print(single_number())
