@@ -1,4 +1,4 @@
-# axe
+# Axe
 def axe(_x, _y):
     for y in range(_y):
         for x in range(_x):
@@ -7,6 +7,7 @@ def axe(_x, _y):
 
 axe(1,1)
 
+# Pyramid
 def pattern(rows):
     k = 2 * rows - 2
     for i in range(0, rows):
