@@ -18,4 +18,4 @@ def pattern(rows):
             print("*", end=" ")
         print()
 
-pattern(5)
+pattern(8)
