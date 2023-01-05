@@ -19,3 +19,23 @@ def pattern(rows):
         print()
 
 pattern(8)
+
+# number
+def power(n1, n2):
+    return n1, n2
+
+
+base = int(input("Enter base number: "))
+a = int(input("Enter power number(positive integer): "))
+
+result = power(base,a)
+print(base, "^", a,"=", result)
+
+if (a != 0):
+    base * power(base, a -1 )
+else:
+    pass
+
+print(base,"^", a,"=", result)
+
+
