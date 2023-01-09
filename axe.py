@@ -29,7 +29,7 @@ base = int(input("Enter base number: "))
 a = int(input("Enter power number(positive integer): "))
 
 result = power(base,a)
-print(base, "^", a,"=", result)
+print(base, "^", a,"= ", result)
 
 if (a != 0):
     base * power(base, a -1 )
