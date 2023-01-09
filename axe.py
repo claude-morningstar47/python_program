@@ -37,5 +37,7 @@ else:
     pass
 
 print(base,"^", a,"=", result)
+print(base,"^", a,"=", result)
+print(base,"^", a,"=", result)
 
 
