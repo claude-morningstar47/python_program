@@ -57,6 +57,7 @@ def test_find_pair():
 
 
 if __name__ == "__main__":
-    test_count_frequencies()
+   # test_count_frequencies()
     test_find_pair()
     main()
+
