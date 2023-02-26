@@ -12,7 +12,7 @@
 #     a = random.choice(animal)
 #     pg.write("you are a" + a)
 #     pg.press('enter')
-    
+# je suis le chatiment    
 
 #! Single number
 def single_number():
