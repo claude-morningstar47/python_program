@@ -1,3 +1,6 @@
+import pyautogui as pg
+
+
 def prime_factor(n):
     for i in range(2, n + 1):
         if n % i == 0:
@@ -12,3 +15,9 @@ def prime_factor(n):
 
 n = int(input("number: "))
 prime_factor(n)
+
+
+# while True:
+#     a = pg.confirm("Are you Gay ?", buttons=['Yes', 'Nope'])
+#     if a == 'Yes':
+#         break
