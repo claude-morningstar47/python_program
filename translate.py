@@ -1,7 +1,9 @@
 from googletrans import Translator
 
 translator = Translator()
-txt = str(input("Enter text: "))
-output = translator.Translator(txt, dest='en')
+print("Translate EN => FR")
+text_to_translate = str(input("Enter text: "))
 
-print(output.text)
+translated_text = translator.translate(text_to_translate, src="en", dest="fr")
+
+print(translated_text.text)
