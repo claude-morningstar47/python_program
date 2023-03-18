@@ -24,27 +24,30 @@ def pattern(rows):
             print("*", end=" ")
         print()
 
-# pattern(8)
 
-# # number
-# def power(n1, n2):
-#     return n1, n2
+pattern(8)
+
+# number
 
 
-# base = int(input("Enter base number: "))
-# a = int(input("Enter power number(positive integer): "))
+def power(n1, n2):
+    return n1, n2
 
-# result = power(base,a)
-# print(base, "^", a,"= ", result)
 
-# if (a != 0):
-#     base * power(base, a -1 )
-# else:
-#     pass
+base = int(input("Enter base number: "))
+a = int(input("Enter power number(positive integer): "))
 
-# print(base,"^", a,"=", result)
-# print(base,"^", a,"=", result)
-# print(base,"^", a,"=", result)
+result = power(base, a)
+print(base, "^", a, "= ", result)
+
+if (a != 0):
+    base * power(base, a - 1)
+else:
+    pass
+
+print(base, "^", a, "=", result)
+print(base, "^", a, "=", result)
+print(base, "^", a, "=", result)
 
 
 db = mysql.connector.connect(host='localhost',
