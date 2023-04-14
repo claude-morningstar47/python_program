@@ -18,3 +18,5 @@ to_hex(77)
 assert to_hex(26) == '1a'
 assert to_hex(-1) == 'ffffffff'
 assert to_hex(0) == '0'
+
+# je n'arrive pas a utiliser GPT
