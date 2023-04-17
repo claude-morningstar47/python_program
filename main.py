@@ -1,55 +1,94 @@
 # import os
-# from typing import Optional
+# import send2trash
 # import typer
+# from pathlib import Path
 
 
-# def find_files_with_extension(directory: str, extension: str) -> list:
-#     return [file for file in os.listdir(directory) if file.endswith("." + extension)]
+# def find_files_with_extension(directory: Path, extension: str, sort_order: str = 'asc') -> tuple:
+#     """Retourne une liste des fichiers avec l'extension donnée dans le répertoire donné, ainsi que le chemin du dossier."""
+#     directory_path = directory
+#     # Récupérer la liste des noms de fichiers avec l'extension donnée
+#     files = [f.name for f in directory.glob(f"*.{extension}") if f.is_file()]
+#     # Trier la liste selon l'ordre alphabétique croissant ou décroissant
+#     files.sort(reverse=(sort_order == "desc"))
+#     return directory_path, files
 
 
-# def delete_file(file: str):
-#     try:
-#         os.remove(file)
-#         print(f"Le fichier '{file}' a été supprimé.")
-#     except (FileNotFoundError, OSError) as e:
-#         print(f"Erreur lors de la suppression du fichier '{file}': {e}")
+# def delete_file(directory_path, file) -> bool:
+#     """Supprime un fichier."""
+#     chemin = directory_path.joinpath(file)
+
+#     if os.path.exists(chemin):
+#         try:
+#             send2trash.send2trash(chemin)
+#             print(f"Le fichier '{file}' a été envoyé dans la corbeille.")
+#             return True
+#         except Exception as e:
+#             print(
+#                 f"Erreur lors de la mise a la corbeille du fichier '{file}': {e}")
+#             return False
+#     else:
+#         print(f"Le fichier '{file}' n'existe pas.")
 
 
-# def delete_files(files: list[str]):
+# def delete_files(directory_path, files: list[str], confirm: bool = False) -> None:
+#     """Supprime tous les fichiers de la liste."""
+#     # Afficher une liste des fichiers à supprimer
+#     print("Fichiers à supprimer :")
 #     for file in files:
-#         delete_file(file)
+#         path = Path(file)
+#         if confirm:
+#             prompt = input(
+#                 f"Voulez-vous supprimer le fichier '{path}' ? [O/n] ")
+#             if prompt.lower() != "o":
+#                 continue
+#         delete_file(directory_path, path)
 
 
-# def main(extension: str,
-#          directory: Optional[str] = typer.Argument(
-#              None, help='Dossier dans lequel chercher.'),
-#          delete: bool = typer.Option(
-#              False, help='Supprimer les fichiers trouvés.'),
-#          file: Optional[str] = typer.Option(
-#              None, '--file', '-f', help='Supprimer un fichier spécifique.')
-#          ):
+# def main(
+#     extension: str,
+#     directory: Path = Path.cwd(),
+#     delete: bool = False,
+#     file: Path = None,
+#     confirm: bool = False,
+#     sort_order: str = 'asc'
+
+
+# ) -> None:
 #     """
 #     Afficher les fichiers trouvés avec l'extension donnée et les supprimer si demandé.
-#     """
-#     if directory and not os.path.isdir(directory):
-#         raise typer.BadParameter(f"Le dossier '{directory}' n'existe pas.")
 
+#     Args:\n
+#         extension: L'extension des fichiers à chercher.
+#         directory: Le répertoire dans lequel chercher les fichiers.
+#         delete: Si vrai, supprime les fichiers trouvés sans confirmation.
+#         file: Le fichier à supprimer (ignoré si delete est vrai).
+#         confirm: Si vrai, demande une confirmation avant de supprimer chaque fichier.
+#         sort_order: L'ordre de tri des fichiers ("asc" pour croissant, "desc" pour décroissant)
+
+
+#     Exemple: python mon_programme.py --extension txt --directory /chemin/vers/dossier --delete --confirm --sort_order desc
+
+#     """
 #     if file:
-#         delete_file(file)
+#         delete_file(directory_path, file)
 #         return
 
-#     files = find_files_with_extension(directory, extension)
+#     if not directory.is_dir():
+#         raise typer.BadParameter(f"Le dossier '{directory}' n'existe pas.")
+
+#     directory_path, files = find_files_with_extension(directory, extension)
 
 #     if files:
 #         print(
-#             f"Les fichiers avec l'extension '{extension}' dans le dossier '{directory}' sont :")
+#             f"Il y a '{len(files)}' fichiers portant l'extension '{extension}' dans le dossier '{directory}', qui sont :")
 #         print('\n'.join(files))
 #     else:
 #         print(
 #             f"Aucun fichier avec l'extension '{extension}' trouvé dans le dossier '{directory}'.")
 
 #     if delete:
-#         delete_files(files)
+#         delete_files(directory_path, files, confirm)
 
 
 # if __name__ == "__main__":
@@ -57,31 +96,64 @@
 
 
 import os
-import shutil
+import send2trash
 import typer
 from pathlib import Path
+import random
 
 
-def find_files_with_extension(directory: Path, extension: str) -> list:
-    """Retourne une liste des fichiers avec l'extension donnée dans le répertoire donné."""
-    return [f.name for f in directory.glob(f"*.{extension}") if f.is_file()]
+def find_files_with_extension(directory: Path, extension: str, sort_order: str = 'asc') -> tuple:
+    """Retourne une liste des fichiers avec l'extension donnée dans le répertoire donné, ainsi que le chemin du dossier."""
+    if not directory.is_dir():
+        raise typer.BadParameter(f"Le dossier '{directory}' n'existe pas.")
+
+    # Vérifier que l'extension est valide
+    if not extension:
+        raise typer.BadParameter("L'extension doit être spécifiée.")
+    elif not extension.startswith("."):
+        extension = f".{extension}"
+
+    # Récupérer la liste des noms de fichiers avec l'extension donnée
+    files = [f.name for f in directory.glob(f"*{extension}") if f.is_file()]
+    if not files:
+        raise typer.BadParameter(
+            f"Aucun fichier avec l'extension '{extension}' trouvé dans le dossier '{directory}'.")
+
+    # Trier la liste selon l'ordre alphabétique croissant ou décroissant
+    if sort_order == "asc":
+        files.sort()
+    elif sort_order == "desc":
+        files.sort(reverse=True)
+    elif sort_order == "random":
+        random.shuffle(files)
+    else:
+        raise typer.BadParameter(
+            "L'ordre de tri doit être 'asc', 'desc' ou 'random'.")
+    return directory, files
 
 
-def delete_file(file: Path) -> bool:
+def delete_file(directory_path, file) -> bool:
     """Supprime un fichier."""
+    chemin = directory_path.joinpath(file)
+
+    if not os.path.exists(chemin):
+        print(f"Le fichier '{file}' n'existe pas.")
+        return False
+
     try:
-        # file.unlink()
-        os.remove(file)
-        print(f"Le fichier '{file}' a été supprimé.")
+        send2trash.send2trash(chemin)
+        print(f"Le fichier '{file}' a été envoyé dans la corbeille.")
         return True
-    # except (FileNotFoundError, OSError) as e:
     except Exception as e:
-        print(f"Erreur lors de la suppression du fichier '{file}': {e}")
+        print(
+            f"Erreur lors de la mise a la corbeille du fichier '{file}': {e}")
         return False
 
 
-def delete_files(files: list[str], confirm: bool = False) -> None:
+def delete_files(directory_path, files: list[str], confirm: bool = False) -> None:
     """Supprime tous les fichiers de la liste."""
+    # Afficher une liste des fichiers à supprimer
+    print("Fichiers à supprimer :")
     for file in files:
         path = Path(file)
         if confirm:
@@ -89,128 +161,39 @@ def delete_files(files: list[str], confirm: bool = False) -> None:
                 f"Voulez-vous supprimer le fichier '{path}' ? [O/n] ")
             if prompt.lower() != "o":
                 continue
-        delete_file(path)
+        delete_file(directory_path, path)
 
 
-def main(
-    extension: str,
-    directory: Path = Path.cwd(),
-    delete: bool = False,
-    file: Path = None,
-    confirm: bool = False,
-) -> None:
-    """
-    Afficher les fichiers trouvés avec l'extension donnée et les supprimer si demandé.
+def display_files_content(directory_path, files: list[str], confirm: bool = False) -> None:
+    """Affiche le contenu des fichiers de la liste"""
+    for file in files:
+        path = directory_path.joinpath(file)
+        if not path.exists():
+            print("Le fichier '{file}' n'existe pas.")
+            continue
 
-    Args:\n
-        extension: L'extension des fichiers à chercher.\n
-        directory: Le répertoire dans lequel chercher les fichiers.\n
-        delete: Si vrai, supprime les fichiers trouvés sans confirmation.\n
-        file: Le fichier à supprimer (ignoré si delete est vrai).\n
-        confirm: Si vrai, demande une confirmation avant de supprimer chaque fichier.\n
+        # Afficher le contenu du fichier
+        print(f"Contenu du fichier '{file}' :")
+        try:
+            with open(path, 'r') as f:
+                content = f.read()
+                print(content)
+        except Exception as e:
+            print(f"Erreur lors de la lecture du fichier '{file}': {e}")
+            continue
 
-    Exemple: python mon_programme.py --extension txt --directory /chemin/vers/dossier --delete --confirm
 
-    """
-    if file:
-        delete_file(file)
-        return
-
-    if not directory.is_dir():
-        raise typer.BadParameter(f"Le dossier '{directory}' n'existe pas.")
-
-    files = find_files_with_extension(directory, extension)
-
-    if files:
-        print(
-            f"Les fichiers avec l'extension '{extension}' dans le dossier '{directory}' sont :")
-        print('\n'.join(files))
-    else:
-        print(
-            f"Aucun fichier avec l'extension '{extension}' trouvé dans le dossier '{directory}'.")
-
+def main(directory: str, extension: str, delete: bool = False, display_content: bool = False,
+         confirm: bool = False, sort_order: str = 'asc') -> None:
+    """Fonction principale."""
+    directory_path = Path(directory)
+    directory, files = find_files_with_extension(
+        directory_path, extension, sort_order)
     if delete:
-        delete_files(files, confirm)
+        delete_files(directory_path, files, confirm)
+    elif display_content:
+        display_files_content(directory_path, files, confirm)
 
 
 if __name__ == "__main__":
     typer.run(main)
-
-
-# import os
-# import shutil
-# import typer
-# from pathlib import Path
-
-
-# def find_files_with_extension(directory_path: Path, extension: str) -> list:
-#     """Retourne une liste des noms des fichiers avec l'extension donnée dans le répertoire donné."""
-#     return [f.name for f in directory_path.glob(f"*.{extension}") if f.is_file()]
-
-
-# def delete_file(file_path: Path) -> bool:
-#     """Supprime un fichier donné."""
-#     try:
-#         file_path.unlink()
-#         print(f"Le fichier '{file_path}' a été supprimé.")
-#         return True
-#     except (FileNotFoundError, OSError) as e:
-#         print(f"Erreur lors de la suppression du fichier '{file_path}': {e}")
-#         return False
-
-
-# def delete_files(files_list: list[str], confirm_delete: bool = False) -> None:
-#     """Supprime tous les fichiers de la liste donnée."""
-#     for file_name in files_list:
-#         file_path = Path(file_name)
-#         if confirm_delete:
-#             prompt = input(
-#                 f"Voulez-vous supprimer le fichier '{file_path}' ? [O/n] ")
-#             if prompt.lower() != "o":
-#                 continue
-#         delete_file(file_path)
-
-
-# def main(
-#     extension: str,
-#     directory_path: Path = Path.cwd(),
-#     delete_files_flag: bool = False,
-#     file_path: Path = None,
-#     confirm_delete_flag: bool = False,
-# ) -> None:
-#     """
-#     Afficher les fichiers trouvés avec l'extension donnée et les supprimer si demandé.
-
-#     Args:
-#         extension: L'extension des fichiers à chercher.
-#         directory_path: Le répertoire dans lequel chercher les fichiers.
-#         delete_files_flag: Si vrai, supprime les fichiers trouvés sans confirmation.
-#         file_path: Le chemin du fichier à supprimer (ignoré si delete_files_flag est vrai).
-#         confirm_delete_flag: Si vrai, demande une confirmation avant de supprimer chaque fichier.
-
-#     Exemple: python mon_programme.py --extension txt --directory /chemin/vers/dossier --delete_files --confirm_delete
-#     """
-#     if file_path:
-#         delete_file(file_path)
-#         return
-
-#     if not directory_path.is_dir():
-#         raise typer.BadParameter(
-#             f"Le dossier '{directory_path}' n'existe pas.")
-
-#     files_list = find_files_with_extension(directory_path, extension)
-
-#     if files_list:
-#         print(
-#             f"Les fichiers avec l'extension '{extension}' dans le dossier '{directory_path}' sont :")
-#         print('\n'.join(files_list))
-#     else:
-#         print(
-#             f"Aucun fichier avec l'extension '{extension}' trouvé dans le dossier '{directory_path}'.")
-
-#     if delete_files_flag:
-#         delete_files(files_list, confirm_delete_flag)
-
-
-# if __name__ == "__main__":
-#     typer.run(main)
