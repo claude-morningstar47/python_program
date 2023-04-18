@@ -164,13 +164,37 @@ def delete_files(directory_path, files: list[str], confirm: bool = False) -> Non
         delete_file(directory_path, path)
 
 
+# def display_files_content(directory_path, files: list[str], confirm: bool = False) -> None:
+#     """Affiche le contenu des fichiers de la liste"""
+#     for file in files:
+#         path = directory_path.joinpath(file)
+#         if not path.exists():
+#             print("Le fichier '{file}' n'existe pas.")
+#             continue
+
+#         # Afficher le contenu du fichier
+#         print(f"Contenu du fichier '{file}' :")
+#         try:
+#             with open(path, 'r') as f:
+#                 content = f.read()
+#                 print(content)
+#         except Exception as e:
+#             print(f"Erreur lors de la lecture du fichier '{file}': {e}")
+#             continue
+
 def display_files_content(directory_path, files: list[str], confirm: bool = False) -> None:
     """Affiche le contenu des fichiers de la liste"""
     for file in files:
         path = directory_path.joinpath(file)
         if not path.exists():
-            print("Le fichier '{file}' n'existe pas.")
+            print(f"Le fichier '{file}' n'existe pas.")
             continue
+
+        if confirm:
+            user_input = input(
+                f"Voulez-vous afficher le contenu du fichier '{file}' ? (Oui/Non) ")
+            if user_input.lower() not in ['oui', 'o']:
+                continue
 
         # Afficher le contenu du fichier
         print(f"Contenu du fichier '{file}' :")
@@ -183,7 +207,7 @@ def display_files_content(directory_path, files: list[str], confirm: bool = Fals
             continue
 
 
-def main(directory: str, extension: str, delete: bool = False, display_content: bool = False,
+def main(directory: str, extension: str, delete: bool = False, display: bool = False,
          confirm: bool = False, sort_order: str = 'asc') -> None:
     """Fonction principale."""
     directory_path = Path(directory)
@@ -191,7 +215,7 @@ def main(directory: str, extension: str, delete: bool = False, display_content: 
         directory_path, extension, sort_order)
     if delete:
         delete_files(directory_path, files, confirm)
-    elif display_content:
+    elif display:
         display_files_content(directory_path, files, confirm)
 
 
