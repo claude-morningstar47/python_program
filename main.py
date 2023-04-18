@@ -164,31 +164,11 @@ def delete_files(directory_path, files: list[str], confirm: bool = False) -> Non
         delete_file(directory_path, path)
 
 
-# def display_files_content(directory_path, files: list[str], confirm: bool = False) -> None:
-#     """Affiche le contenu des fichiers de la liste"""
-#     for file in files:
-#         path = directory_path.joinpath(file)
-#         if not path.exists():
-#             print("Le fichier '{file}' n'existe pas.")
-#             continue
-
-#         # Afficher le contenu du fichier
-#         print(f"Contenu du fichier '{file}' :")
-#         try:
-#             with open(path, 'r') as f:
-#                 content = f.read()
-#                 print(content)
-#         except Exception as e:
-#             print(f"Erreur lors de la lecture du fichier '{file}': {e}")
-#             continue
-
 def display_files_content(directory_path, files: list[str], confirm: bool = False) -> None:
-    """Affiche le contenu des fichiers de la liste"""
+    """Affiche la liste des fichiers dans le dossier et permet de confirmer l'ouverture du contenu de chaque fichier."""
+    print(f"Liste des fichiers dans le dossier '{directory_path}':")
     for file in files:
-        path = directory_path.joinpath(file)
-        if not path.exists():
-            print(f"Le fichier '{file}' n'existe pas.")
-            continue
+        print(f"- {file}")
 
         if confirm:
             user_input = input(
@@ -196,15 +176,15 @@ def display_files_content(directory_path, files: list[str], confirm: bool = Fals
             if user_input.lower() not in ['oui', 'o']:
                 continue
 
-        # Afficher le contenu du fichier
-        print(f"Contenu du fichier '{file}' :")
-        try:
-            with open(path, 'r') as f:
-                content = f.read()
-                print(content)
-        except Exception as e:
-            print(f"Erreur lors de la lecture du fichier '{file}': {e}")
-            continue
+            # Afficher le contenu du fichier
+            path = directory_path.joinpath(file)
+            print(f"Contenu du fichier '{file}' :")
+            try:
+                with open(path, 'r') as f:
+                    content = f.read()
+                    print(content)
+            except Exception as e:
+                print(f"Erreur lors de la lecture du fichier '{file}': {e}")
 
 
 def main(directory: str, extension: str, delete: bool = False, display: bool = False,
