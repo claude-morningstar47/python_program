@@ -100,6 +100,9 @@ import send2trash
 import typer
 from pathlib import Path
 import random
+import hashlib
+from PIL import Image
+import click
 
 
 def find_files_with_extension(directory: Path, extension: str, sort_order: str = 'asc') -> tuple:
@@ -187,8 +190,42 @@ def display_files_content(directory_path, files: list[str], confirm: bool = Fals
                 print(f"Erreur lors de la lecture du fichier '{file}': {e}")
 
 
+def detect_duplicates(directory_path: Path) -> None:
+    # Créer un dictionnaire pour stocker les images en utilisant une somme de contrôle MD5
+    images = {}
+
+    # Parcourir tous les fichiers du dossier
+    for filename in os.listdir(directory_path):
+        if not filename.endswith(".jpg") and not filename.endswith(".jpeg") and not filename.endswith(".png"):
+            # Ignorer les fichiers qui ne sont pas des images
+            continue
+
+        # Ouvrir l'image avec la bibliothèque PIL
+        img = Image.open(os.path.join(directory_path, filename))
+
+        # Calculer la somme de contrôle MD5 de l'image
+        md5 = hashlib.md5(img.tobytes()).hexdigest()
+
+        # Vérifier si l'image a déjà été ajoutée au dictionnaire
+        if md5 in images:
+            # Si oui, afficher un message pour signaler la duplication
+            click.echo(
+                f"Le fichier '{filename}' est une doublure de '{images[md5]}'")
+        else:
+            # Si non, ajouter l'image au dictionnaire avec le nom de fichier comme valeur
+            images[md5] = filename
+
+    # Trier les images par ordre alphabétique de nom de fichier
+    images_triees = sorted(images.values())
+
+    # Afficher les noms de fichier triés
+    click.echo("Les images triées par ordre alphabétique sont :")
+    for filename in images_triees:
+        click.echo(filename)
+
+
 def main(directory: str, extension: str, delete: bool = False, display: bool = False,
-         confirm: bool = False, sort_order: str = 'asc') -> None:
+         confirm: bool = False, sort_order: str = 'asc', img: bool = False) -> None:
     """Fonction principale."""
     directory_path = Path(directory)
     directory, files = find_files_with_extension(
@@ -197,6 +234,8 @@ def main(directory: str, extension: str, delete: bool = False, display: bool = F
         delete_files(directory_path, files, confirm)
     elif display:
         display_files_content(directory_path, files, confirm)
+    elif img:
+        detect_duplicates(directory_path)
 
 
 if __name__ == "__main__":
