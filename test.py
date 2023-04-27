@@ -1,3 +1,6 @@
+import re
+from subprocess import run, PIPE
+from re import search
 import builtins
 
 # function = [i for i in dir(builtins) if i[0].islower]
@@ -18,8 +21,8 @@ if last_slice != 0:
     functions.extend([''] * (4 - last_slice))
 
 # Afficher les noms des fonctions dans des colonnes formatées
-for i in range(0, len(functions), 4):
-    print('{:20s}{:20s}{:20s}{:20s}'.format(*functions[i:i+4]))
+# for i in range(0, len(functions), 4):
+    # print('{:20s}{:20s}{:20s}{:20s}'.format(*functions[i:i+4]))
 
 
 def findMaxConsecutiveOnes(nums: list[int]) -> int:
@@ -39,3 +42,31 @@ def findMaxConsecutiveOnes(nums: list[int]) -> int:
 
 print(findMaxConsecutiveOnes(
     [1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1]))
+
+
+# x = [1, 2, 3]
+# y = [4, 5, 6]
+# print(zip(x, y))
+
+
+# List the filesystem Except Pseudo-Filesystem
+
+
+fd = dict(stdin=PIPE, stdout=PIPE, stderr=PIPE)
+cout = run(['df', '-h'], **fd)
+fs = cout.stdout.decode().splitlines()
+disk = [i for i in fs if search(r"^.*(?=sd[a-z])", i)]
+print('='*50)
+print(fs[0])
+print('='*50)
+print(*disk, sep='\n')
+
+
+# fd = dict(stdin=PIPE, stdout=PIPE, stderr=PIPE)
+# cout = run(['diskutil', 'list'], **fd)
+# fs = cout.stdout.decode().splitlines()
+# disk = [i for i in fs if re.search(r'^/dev/.*', i)]
+# print('='*50)
+# print(fs[0])
+# print('='*50)
+# print(*disk, sep='\n')
