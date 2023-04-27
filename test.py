@@ -7,7 +7,7 @@ import builtins
 # for fn in zip(*[iter(function)]*4):
 #     print(fmt.format(*fn))
 
-# une fonction tres delicate
+# une fonction tres delicate vvvvv
 functions = [func for func in dir(builtins) if callable(
     getattr(builtins, func)) and func[0].islower()]
 
