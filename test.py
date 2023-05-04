@@ -70,3 +70,14 @@ print(*disk, sep='\n')
 # print(fs[0])
 # print('='*50)
 # print(*disk, sep='\n')
+
+
+def myFunction():
+    """
+    This is my function
+    """
+    print("="*50)
+
+
+print(myFunction.__doc__)
+print(myFunction())
