@@ -1,3 +1,4 @@
+from collections import Counter
 import re
 from subprocess import run, PIPE
 from re import search
@@ -81,3 +82,23 @@ def myFunction():
 
 print(myFunction.__doc__)
 print(myFunction())
+
+
+a = Counter('blue')
+b = Counter('yellow')
+
+print(a)
+print(b)
+print((a + b).most_common(3))
+
+
+a = (x * x for x in range(100))
+
+# a is a generator object
+print(type(a))
+
+# Sum all the numbers of the generator
+print(sum(a))
+
+# There are no elements left in the generator
+print(sum(a))
